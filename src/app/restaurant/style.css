@@ -1,0 +1,29 @@
+.header-wrapper{
+    display: flex;
+    justify-content: space-around;
+}
+.header-wrapper ul{
+ display: flex;
+}
+.header-wrapper li{
+ list-style-type: none;
+ padding: 5px;
+}
+.header-wrapper li a{
+ text-decoration: none;
+}
+.header-wrapper li button{
+ background-color: transparent;
+ border: none;
+ color: blueviolet;
+ font-size: 16px;
+ cursor: pointer;
+}
+.footer-wrapper{
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+    text-align: center;
+    font-size: 10px;
+    background-color: #fff;
+}

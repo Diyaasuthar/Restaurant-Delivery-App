@@ -1,0 +1,66 @@
+.hero {
+  height: 100vh;
+  width: 100%;
+  background: url('https://arabellabb.com/wp-content/uploads/2019/05/banenr-img5.jpg') no-repeat center center/cover;
+  color: white;
+  font-family: sans-serif;
+  position: relative;
+}
+
+.navbar {
+  display: flex;
+  justify-content: flex-end;
+  padding: 20px 50px;
+}
+
+.navbar ul {
+  list-style: none;
+  display: flex;
+  gap: 30px;
+}
+
+.navbar a {
+  color: white;
+  text-decoration: none;
+  font-weight: 500;
+  font-size: 30px;
+}
+
+.navbar a:hover {
+  color: #ffb347;
+}
+
+.content {
+  height: calc(100vh - 80px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 0 20px;
+}
+
+.textBox h1 {
+  font-size: 64px;
+  font-weight: bold;
+  margin-bottom: 20px;
+}
+
+.textBox p {
+  font-size: 20px;
+  font-weight: 400;
+  margin-bottom: 30px;
+}
+
+.button {
+  background-color: #ce7041;
+  color: white;
+  padding: 12px 24px;
+  border-radius: 8px;
+  text-decoration: none;
+  font-size: 16px;
+  transition: background 0.3s ease;
+}
+
+.button:hover {
+  background-color: #a6552f;
+}
