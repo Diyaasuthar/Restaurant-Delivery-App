@@ -12,7 +12,7 @@ const Restaurant=()=>{
         <>
         <div className="container">
             <RestaurantHeader />
-         <h1>Restaurant Login/Signup Page</h1>
+         {/* <h1>Restaurant Login/Signup Page</h1> */}
          {
             login?  <RestaurantLogin />:  <RestaurantSignUp />
          }

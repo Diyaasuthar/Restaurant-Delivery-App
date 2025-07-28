@@ -49,12 +49,19 @@ const Page = () => {
     }
   };
 
-  const addToCart=(item)=>{
-     setCartData(item);
-     let localCartIds=cartIds;
-     localCartIds.push(item._id);
-     setCartIds(localCartIds);
-      setRemoveCartData();
+  const addToCart = (item) => {
+    // Check if user is logged in
+    const user = typeof window !== 'undefined' ? JSON.parse(localStorage.getItem('user')) : null;
+    if (!user) {
+      alert('Please login or signup to add items to cart.');
+      window.location.href = '/user-auth';
+      return;
+    }
+    setCartData(item);
+    let localCartIds = cartIds;
+    localCartIds.push(item._id);
+    setCartIds(localCartIds);
+    setRemoveCartData();
   }
 
   const removeFromCart=(id)=>{

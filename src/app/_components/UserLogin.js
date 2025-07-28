@@ -1,5 +1,4 @@
 import { useRouter } from "next/navigation";
-
 const { useState } = require("react")
 
 const UserLogin = (props)=>{
@@ -33,17 +32,20 @@ const UserLogin = (props)=>{
    }
 
     return(
-        <div>
-            <div className="input-wrapper">
-               <input type="text" placeholder="Enter Email" className="input-field" value={email} onChange={(event)=>setEmail(event.target.value)}/>
-            </div>
-             <div className="input-wrapper">
-               <input type="password" placeholder="Enter Password" className="input-field" value={password} onChange={(event)=>setPassword(event.target.value)}/>
-            </div>
-             <div className="input-wrapper">
-              <button onClick={handleLogin} className="button">Login</button>
-            </div>
+      <div className="auth-bg">
+        <div className="auth-card">
+          <h2>User Login</h2>
+          <div className="input-wrapper">
+            <input type="text" placeholder="Enter Email" className="input-field" value={email} onChange={(event)=>setEmail(event.target.value)}/>
+          </div>
+          <div className="input-wrapper">
+            <input type="password" placeholder="Enter Password" className="input-field" value={password} onChange={(event)=>setPassword(event.target.value)}/>
+          </div>
+          <div className="input-wrapper">
+            <button onClick={handleLogin} className="button">Login</button>
+          </div>
         </div>
+      </div>
     )
 }
 

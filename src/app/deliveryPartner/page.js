@@ -1,4 +1,4 @@
-    'use client'
+'use client'
     import { useEffect, useState } from "react";
 import DeliveryHearder from "../_components/deliveryHeader";
 import { useRouter } from "next/navigation";
@@ -14,6 +14,7 @@ import { useRouter } from "next/navigation";
         const [city, setCity] = useState('');
         const [address, setAddress] = useState('');
         const [mobile, setMobile] = useState('');
+        const [showLogin, setShowLogin] = useState(true);
         const router = useRouter();
 
 
@@ -61,43 +62,55 @@ import { useRouter } from "next/navigation";
         return (
             <div>
                 <DeliveryHearder />
-                <h1>Deliver Partner</h1>
-                <div className="auth-container">
-                <div className="login-wrapper">
-                    <h3>Login</h3>
-                    <div className="input-wrapper" >
-                        <input type="text" placeholder="Enter Mobile Number" value={loginMobile} className="input-field" onChange={(event) => setLoginMobile(event.target.value)} />
-                    </div>
-                    <div className="input-wrapper" >
-                        <input type="text" placeholder="Enter Password" value={loginPassword} className="input-field" onChange={(event) => setLoginPassword(event.target.value)} />
-                    </div>
-                    <div className="input-wrapper">
-                        <button className="button" onClick={loginHandle}>Login</button>
-                    </div>
-                </div>
-                <div className="signup-wrapper">
-                    <h3>SignUp</h3>
-                    <div className="input-wrapper">
-                        <input type="text" value={name} onChange={(event) => setName(event.target.value)} className="input-field" placeholder="Enter Name" />
-                    </div>
-                    <div className="input-wrapper">
-                        <input type="password" value={password} onChange={(event) => setPassword(event.target.value)} className="input-field" placeholder="Enter Password" />
-                    </div>
-                    <div className="input-wrapper">
-                        <input type="text" value={confirmPassword} onChange={(event) => setConfirmPassword(event.target.value)} className="input-field" placeholder="Enter Confirm Password" />
-                    </div>
-                    <div className="input-wrapper">
-                        <input type="text" value={city} onChange={(event) => setCity(event.target.value)} className="input-field" placeholder="Enter City" />
-                    </div>
-                    <div className="input-wrapper">
-                        <input type="text" value={address} onChange={(event) => setAddress(event.target.value)} className="input-field" placeholder="Enter Address" />
-                    </div>
-                    <div className="input-wrapper">
-                        <input type="text" value={mobile} onChange={(event) => setMobile(event.target.value)} className="input-field" placeholder="Enter Mobile Number" />
-                    </div>
-                    <div className="input-wrapper">
-                        <button className="button" onClick={handleSignUp}>SignUp</button>
-                    </div>
+                <div className="auth-bg">
+                <div className="auth-card">
+                    {showLogin ? (
+                        <>
+                            <h3>Login</h3>
+                            <div className="input-wrapper" >
+                                <input type="text" placeholder="Enter Mobile Number" value={loginMobile} className="input-field" onChange={(event) => setLoginMobile(event.target.value)} />
+                            </div>
+                            <div className="input-wrapper" >
+                                <input type="text" placeholder="Enter Password" value={loginPassword} className="input-field" onChange={(event) => setLoginPassword(event.target.value)} />
+                            </div>
+                            <div className="input-wrapper">
+                                <button className="button" onClick={loginHandle}>Login</button>
+                            </div>
+                            <div style={{ marginTop: '10px', width: '100%', textAlign: 'center' }}>
+                                <span>Don't have an account?</span>
+                                <button className="button-link" style={{marginLeft: 8}} onClick={() => setShowLogin(false)}>Sign Up</button>
+                            </div>
+                        </>
+                    ) : (
+                        <>
+                            <h3>SignUp</h3>
+                            <div className="input-wrapper">
+                                <input type="text" value={name} onChange={(event) => setName(event.target.value)} className="input-field" placeholder="Enter Name" />
+                            </div>
+                            <div className="input-wrapper">
+                                <input type="password" value={password} onChange={(event) => setPassword(event.target.value)} className="input-field" placeholder="Enter Password" />
+                            </div>
+                            <div className="input-wrapper">
+                                <input type="text" value={confirmPassword} onChange={(event) => setConfirmPassword(event.target.value)} className="input-field" placeholder="Enter Confirm Password" />
+                            </div>
+                            <div className="input-wrapper">
+                                <input type="text" value={city} onChange={(event) => setCity(event.target.value)} className="input-field" placeholder="Enter City" />
+                            </div>
+                            <div className="input-wrapper">
+                                <input type="text" value={address} onChange={(event) => setAddress(event.target.value)} className="input-field" placeholder="Enter Address" />
+                            </div>
+                            <div className="input-wrapper">
+                                <input type="text" value={mobile} onChange={(event) => setMobile(event.target.value)} className="input-field" placeholder="Enter Mobile Number" />
+                            </div>
+                            <div className="input-wrapper">
+                                <button className="button" onClick={handleSignUp}>SignUp</button>
+                            </div>
+                            <div style={{ marginTop: '10px', width: '100%', textAlign: 'center' }}>
+                                <span>Do you have an account?</span>
+                                <button className="button-link" style={{marginLeft: 8}} onClick={() => setShowLogin(true)}>Login</button>
+                            </div>
+                        </>
+                    )}
                 </div>
                 </div>
             </div>

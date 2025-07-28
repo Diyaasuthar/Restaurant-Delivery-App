@@ -30,20 +30,22 @@ const RestaurantLogin=()=>{
   }
 
     return(
-        <>
-          <h3>Restaurant Login</h3>
-          <div className="input-wrapper">
-            <input type="text" placeholder="Enter Email id" className="input-field" value={email} onChange={(e)=>setEmail(e.target.value)}/>
-            {error && !email && <span className="input-error">Please Enter Data</span>}
+        <div className="auth-bg">
+          <div className="auth-card">
+            <h2>Restaurant Login</h2>
+            <div className="input-wrapper">
+              <input type="text" placeholder="Enter Email id" className="input-field" value={email} onChange={(e)=>setEmail(e.target.value)}/>
+              {error && !email && <span className="input-error">Please Enter Data</span>}
+            </div>
+             <div className="input-wrapper">
+              <input type="password" placeholder="Enter Password" className="input-field" value={password} onChange={(e)=>setPassword(e.target.value)}/>
+               {error && !password && <span className="input-error">Please Enter Data</span>}
+            </div>
+             <div className="input-wrapper">
+              <button onClick={handleLogin} className="button">Login</button>
+            </div>
           </div>
-           <div className="input-wrapper">
-            <input type="password" placeholder="Enter Password" className="input-field" value={password} onChange={(e)=>setPassword(e.target.value)}/>
-             {error && !password && <span className="input-error">Please Enter Data</span>}
-          </div>
-           <div className="input-wrapper">
-            <button onClick={handleLogin} className="button">Login</button>
-          </div>
-        </>
+        </div>
     )
 }
 
