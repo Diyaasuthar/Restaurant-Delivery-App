@@ -30,7 +30,7 @@ const Page = () => {
 
     useEffect(() => {
         if (total === 0 && typeof window !== 'undefined') {
-            router.push('/');
+            router.push('/order');
         }
     }, [total, router]);
 
