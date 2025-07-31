@@ -1,26 +1,66 @@
 'use client'
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import CustomerHearder from "../_components/CustomerHeader";
 import RestaurantFooter from "../_components/RestaurantFooter";
 import { TAX, DELIVERY_CHARGES } from "../lib/constant";
 import { useRouter } from "next/navigation";
 
 const Page = () => {
-    const [cartStorage, setCartStorage] = useState(JSON.parse(localStorage.getItem('cart')));
-    const [total]=useState(()=>cartStorage.length==1?cartStorage[0].price:cartStorage.reduce((a,b)=>{
-        return a.price+b.price
-    }))
-    console.log(total);
+    const [cartStorage, setCartStorage] = useState([]);
+    const [total, setTotal] = useState(0);
     const router = useRouter();
 
-    const orderNow=()=>{
-        if(JSON.parse(localStorage.getItem('user'))){
-        router.push('/order')
-        }else{
+    useEffect(() => {
+        // Only access localStorage on the client side
+        if (typeof window !== 'undefined') {
+            const cart = JSON.parse(localStorage.getItem('cart') || '[]');
+            setCartStorage(cart);
+            
+            if (cart.length > 0) {
+                const calculatedTotal = cart.reduce((sum, item) => sum + (Number(item.price) || 0), 0);
+                setTotal(calculatedTotal);
+            }
+        }
+    }, []);
+
+    const orderNow = () => {
+        if (typeof window === 'undefined') return;
+        
+        if (JSON.parse(localStorage.getItem('user'))) {
+            router.push('/order')
+        } else {
             router.push('/user-auth?order=true')
         }
     }
-    
+
+    const removeFromCart = (itemId) => {
+        if (typeof window === 'undefined') return;
+        
+        const updatedCart = cartStorage.filter(item => item._id !== itemId);
+        setCartStorage(updatedCart);
+        localStorage.setItem('cart', JSON.stringify(updatedCart));
+        
+        if (updatedCart.length > 0) {
+            const newTotal = updatedCart.reduce((sum, item) => sum + (Number(item.price) || 0), 0);
+            setTotal(newTotal);
+        } else {
+            setTotal(0);
+        }
+    };
+
+    // Show loading state while data is being loaded
+    if (typeof window === 'undefined') {
+        return (
+            <div>
+                <CustomerHearder />
+                <div style={{ textAlign: 'center', padding: '50px' }}>
+                    <h2>Loading...</h2>
+                </div>
+                <RestaurantFooter />
+            </div>
+        );
+    }
+
     return (
         <div>
             <CustomerHearder />
@@ -34,10 +74,8 @@ const Page = () => {
                                 <div className="description">{item.description}</div>
                                 {
                                     <button onClick={() => removeFromCart(item._id)}>Remove From Cart</button>
-
                                 }
                                 <div className="list-item-block-3 ">Price: {item.price}</div>
-
                             </div>
                         </div>
                     )) :
@@ -47,21 +85,21 @@ const Page = () => {
             <div className="total-wrapper">
                 <div className="block-1">
                     <div className="row">
-                    <span>Food Charges : </span>
-                    <span>{total}</span>
-                </div>
-                <div className="row">
-                    <span>Tax : </span>
-                    <span>{total*TAX/100}</span>
-                </div>
-                <div className="row">
-                    <span>Delivery Charges : </span>
-                    <span>{DELIVERY_CHARGES}</span>
-                </div>
-                <div className="row">
-                    <span>Total Amount : </span>
-                    <span>{total+DELIVERY_CHARGES+(total*TAX/100)}</span>
-                </div>
+                        <span>Food Charges : </span>
+                        <span>{total}</span>
+                    </div>
+                    <div className="row">
+                        <span>Tax : </span>
+                        <span>{total * TAX / 100}</span>
+                    </div>
+                    <div className="row">
+                        <span>Delivery Charges : </span>
+                        <span>{DELIVERY_CHARGES}</span>
+                    </div>
+                    <div className="row">
+                        <span>Total Amount : </span>
+                        <span>{total + DELIVERY_CHARGES + (total * TAX / 100)}</span>
+                    </div>
                 </div>
                 <div className="block-2">
                     <button onClick={orderNow}>Place Order Now</button>

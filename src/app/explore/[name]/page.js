@@ -14,21 +14,25 @@ const Page = () => {
 
   const [restaurantDetails, setRestaurantDetails] = useState(null);
   const [foodItems, setFoodItems] = useState([]); // ✅ default to empty array
-  const [cartData,setCartData]=useState(null);
-  const [cartStorage,setCartStorage]=useState(JSON.parse(localStorage.getItem('cart')));
-  const [cartIds,setCartIds]=useState(cartStorage?()=>cartStorage.map((item)=>{
-    return item._id
-  }):[]);
-  const [removeCartData,setRemoveCartData]=useState()
+  const [cartData, setCartData] = useState(null);
+  const [cartStorage, setCartStorage] = useState([]);
+  const [cartIds, setCartIds] = useState([]);
+  const [removeCartData, setRemoveCartData] = useState();
+
+  useEffect(() => {
+    // Only access localStorage on the client side
+    if (typeof window !== 'undefined') {
+      const cart = JSON.parse(localStorage.getItem('cart') || '[]');
+      setCartStorage(cart);
+      setCartIds(cart.map((item) => item._id));
+    }
+  }, []);
 
   useEffect(() => {
     if (id) {
       loadRestaurantDetails(id);
     }
   }, [id]);
-
- 
-  
 
   const loadRestaurantDetails = async (id) => {
     try {
@@ -58,17 +62,29 @@ const Page = () => {
       return;
     }
     setCartData(item);
-    let localCartIds = cartIds;
-    localCartIds.push(item._id);
+    let localCartIds = [...cartIds, item._id];
     setCartIds(localCartIds);
     setRemoveCartData();
   }
 
-  const removeFromCart=(id)=>{
+  const removeFromCart = (id) => {
     setRemoveCartData(id);
-    var localIds=cartIds.filter(item=>item!=id);
+    var localIds = cartIds.filter(item => item != id);
     setCartData()
     setCartIds(localIds)
+  }
+
+  // Show loading state while data is being loaded
+  if (typeof window === 'undefined') {
+    return (
+      <div>
+        <CustomerHearder cartData={cartData} removeCartData={removeCartData} />
+        <div style={{ textAlign: 'center', padding: '50px' }}>
+          <h2>Loading...</h2>
+        </div>
+        <RestaurantFooter />
+      </div>
+    );
   }
 
   return (
@@ -87,22 +103,20 @@ const Page = () => {
       </div>
       <div className="food-item-wrapper">
         {
-           foodItems.length>0? foodItems.map((item,index)=>(
-                <div key={index} className="list-item">
-                    <div><img style={{width:100}} src={item.path} /></div>
-                    <div>
-                        <div>{item.name}</div>
-                       <div>{item.price}</div>
-                       <div className="description">{item.description}</div>
-                       {
-                           cartIds.includes(item._id) ?  <button onClick={()=>removeFromCart(item._id)}>Remove From Cart</button>
-                           :  <button onClick={()=>addToCart(item)}>Add to Cart</button>
-                       }
-                        
-                     
-                    </div>
-                </div>
-            )):
+          foodItems.length > 0 ? foodItems.map((item, index) => (
+            <div key={index} className="list-item">
+              <div><img style={{ width: 100 }} src={item.path} /></div>
+              <div>
+                <div>{item.name}</div>
+                <div>{item.price}</div>
+                <div className="description">{item.description}</div>
+                {
+                  cartIds.includes(item._id) ? <button onClick={() => removeFromCart(item._id)}>Remove From Cart</button>
+                    : <button onClick={() => addToCart(item)}>Add to Cart</button>
+                }
+              </div>
+            </div>
+          )) :
             <h1>No Food Items Added For Now</h1>
         }
       </div>
