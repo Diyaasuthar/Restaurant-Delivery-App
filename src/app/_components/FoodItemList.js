@@ -12,7 +12,7 @@ const FoodItemList = () => {
     const loadFoodItems = async () => {
         const restaurantData= JSON.parse(localStorage.getItem('restaurantUser'));
         const resto_id= restaurantData._id;
-        let response = await fetch("http://localhost:3000/api/restaurant/foods/"+resto_id);
+        let response = await fetch("/api/restaurant/foods/"+resto_id);
         response = await response.json();
         if (response.success) {
             setFoodItems(response.result)
@@ -23,7 +23,7 @@ const FoodItemList = () => {
     }
 
     const deleteFoodItem=async(id)=>{
-        let response = await fetch('http://localhost:3000/api/restaurant/foods/'+id,{
+        let response = await fetch('/api/restaurant/foods/'+id,{
             method:'delete'
         });
         response = await response.json();

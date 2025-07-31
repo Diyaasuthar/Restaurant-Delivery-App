@@ -30,7 +30,7 @@ const Page = () => {
 
     useEffect(() => {
         if (total === 0 && typeof window !== 'undefined') {
-            router.push('/order');
+            router.push('/');
         }
     }, [total, router]);
 
@@ -41,7 +41,7 @@ const Page = () => {
         let city = JSON.parse(localStorage.getItem('user')).city;
         let cart = JSON.parse(localStorage.getItem('cart'));
         let foodItemIds = cart.map((item) => item._id).toString();
-        let deliveryBoyResponse = await fetch('http://localhost:3000/api/deliveryPartner/' + city);
+        let deliveryBoyResponse = await fetch('/api/deliveryPartner/' + city);
         deliveryBoyResponse = await deliveryBoyResponse.json();
         let deliveryBoyIds = deliveryBoyResponse.result.map((item) => item._id);
         let deliveryBoy_id = deliveryBoyIds[Math.floor(Math.random() * deliveryBoyIds.length)]
@@ -62,7 +62,7 @@ const Page = () => {
         }
         console.log(collection, user_id);
 
-        let response = await fetch('http://localhost:3000/api/order', {
+        let response = await fetch('/api/order', {
             method: 'POST',
             body: JSON.stringify(collection)
         });

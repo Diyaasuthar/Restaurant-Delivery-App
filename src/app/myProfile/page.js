@@ -22,7 +22,7 @@ const Page = () => {
     const getMyOrder = async (user) => {
         if (!user) return;
         
-        let response = await fetch('http://localhost:3000/api/order?id=' + user._id);
+        let response = await fetch('/api/order?id=' + user._id);
         response = await response.json();
         if (response.success) {
             setMyOrders(response.result)

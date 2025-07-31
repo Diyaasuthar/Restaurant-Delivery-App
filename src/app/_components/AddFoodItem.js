@@ -24,7 +24,7 @@ const AddFoodItem = (props) => {
 
         const resto_id = restaurantData._id;
 
-        const response = await fetch("http://localhost:3000/api/restaurant/foods", {
+        const response = await fetch("/api/restaurant/foods", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json"

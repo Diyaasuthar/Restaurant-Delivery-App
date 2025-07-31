@@ -1,71 +1,119 @@
-import { useRouter } from "next/navigation";
+'use client'
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 
-const UserSignUp=(props)=>{
-
-    const [name,setName] = useState('');
-    const [email,setEmail] = useState('');
-    const [password,setPassword] = useState('');
-    const [confirmPassword,setConfirmPassword] = useState('');
-    const [city,setCity] = useState('');
-    const [address,setAddress] = useState('');
-    const [mobile,setMobile] = useState('');
+const UserSignUp = () => {
+    const [formData, setFormData] = useState({
+        name: '',
+        email: '',
+        password: '',
+        mobile: '',
+        address: '',
+        city: ''
+    });
+    const [errors, setErrors] = useState({});
     const router = useRouter();
-    
-    const handleSignUp = async () => {
-      console.log(name,email,password,confirmPassword,city,address,mobile);
-      let response = await fetch('http://localhost:3000/api/user',{
-        method:'post',
-        body:JSON.stringify({name,email,password,city,address,mobile})
-      })
-      response = await response.json(); 
-      if(response.success){
-        alert("User Signup Successfully")
-        const {result} = response;
-        delete result.password;
-        localStorage.setItem('user',JSON.stringify(result));
-        if(props?.redirect?.order){
-          router.push('/order')
+
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+        setErrors({});
+
+        let response = await fetch('/api/user',{
+            method: 'POST',
+            body: JSON.stringify(formData)
+        });
+        response = await response.json();
+        if(response.success){
+            localStorage.setItem('user',JSON.stringify(response.result));
+            router.push('/');
         }else{
-        router.push('/')
+            setErrors(response.error);
         }
-      }else{
-        alert("Something Failed")
-      }
-      
-    }
-    
-  return(  
-    <div className="auth-bg">
-      <div className="auth-card">
-        <h2>User Sign Up</h2>
-        <div className="input-wrapper">
-          <input type="text" value={name} onChange={(event)=>setName(event.target.value)} className="input-field" placeholder="Enter Name" />
+    };
+
+    const handleChange = (e) => {
+        setFormData({
+            ...formData,
+            [e.target.name]: e.target.value
+        });
+    };
+
+    return (
+        <div className="auth-bg">
+            <div className="auth-card">
+                <h2>User Sign Up</h2>
+                <form onSubmit={handleSubmit}>
+                    <div className="input-wrapper">
+                        <input
+                            type="text"
+                            name="name"
+                            placeholder="Name"
+                            value={formData.name}
+                            onChange={handleChange}
+                            className="input-field"
+                        />
+                        {errors.name && <div className="input-error">{errors.name}</div>}
+                    </div>
+                    <div className="input-wrapper">
+                        <input
+                            type="email"
+                            name="email"
+                            placeholder="Email"
+                            value={formData.email}
+                            onChange={handleChange}
+                            className="input-field"
+                        />
+                        {errors.email && <div className="input-error">{errors.email}</div>}
+                    </div>
+                    <div className="input-wrapper">
+                        <input
+                            type="password"
+                            name="password"
+                            placeholder="Password"
+                            value={formData.password}
+                            onChange={handleChange}
+                            className="input-field"
+                        />
+                        {errors.password && <div className="input-error">{errors.password}</div>}
+                    </div>
+                    <div className="input-wrapper">
+                        <input
+                            type="text"
+                            name="mobile"
+                            placeholder="Mobile"
+                            value={formData.mobile}
+                            onChange={handleChange}
+                            className="input-field"
+                        />
+                        {errors.mobile && <div className="input-error">{errors.mobile}</div>}
+                    </div>
+                    <div className="input-wrapper">
+                        <input
+                            type="text"
+                            name="address"
+                            placeholder="Address"
+                            value={formData.address}
+                            onChange={handleChange}
+                            className="input-field"
+                        />
+                        {errors.address && <div className="input-error">{errors.address}</div>}
+                    </div>
+                    <div className="input-wrapper">
+                        <input
+                            type="text"
+                            name="city"
+                            placeholder="City"
+                            value={formData.city}
+                            onChange={handleChange}
+                            className="input-field"
+                        />
+                        {errors.city && <div className="input-error">{errors.city}</div>}
+                    </div>
+                    <button type="submit" className="button">Sign Up</button>
+                </form>
+            </div>
         </div>
-        <div className="input-wrapper">
-          <input type="text" value={email} onChange={(event)=>setEmail(event.target.value)} className="input-field" placeholder="Enter Email" />
-        </div>
-        <div className="input-wrapper">
-          <input type="password" value={password} onChange={(event)=>setPassword(event.target.value)} className="input-field" placeholder="Enter Password" />
-        </div>
-        <div className="input-wrapper">
-          <input type="text" value={confirmPassword} onChange={(event)=>setConfirmPassword(event.target.value)} className="input-field" placeholder="Enter Confirm Password" />
-        </div>
-        <div className="input-wrapper">
-          <input type="text" value={city} onChange={(event)=>setCity(event.target.value)} className="input-field" placeholder="Enter City" />
-        </div>
-        <div className="input-wrapper">
-          <input type="text" value={address} onChange={(event)=>setAddress(event.target.value)} className="input-field" placeholder="Enter Address" />
-        </div>
-        <div className="input-wrapper">
-          <input type="text" value={mobile} onChange={(event)=>setMobile(event.target.value)} className="input-field" placeholder="Enter Mobile Number" />
-        </div>
-        <div className="input-wrapper">
-          <button onClick={handleSignUp} className="button">Sign Up</button>
-        </div>
-      </div>
-    </div>
-  )
-}
+    );
+};
 
 export default UserSignUp;

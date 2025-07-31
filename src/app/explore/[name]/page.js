@@ -36,7 +36,7 @@ const Page = () => {
 
   const loadRestaurantDetails = async (id) => {
     try {
-      const res = await fetch(`http://localhost:3000/api/customer/${id}`);
+      const res = await fetch(`/api/customer/${id}`);
       const data = await res.json();
       console.log("✅ API Response:", data);
 

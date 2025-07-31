@@ -18,7 +18,7 @@ export default function Home() {
     }, []);
 
     const loadLocations = async () => {
-        let response = await fetch("http://localhost:3000/api/customer/location");
+        let response = await fetch("/api/customer/location");
         response = await response.json();
         if (response.success) {
             setLocations(response.result);
@@ -26,7 +26,7 @@ export default function Home() {
     };
 
     const loadRestaurants = async (params) => {
-        let url = "http://localhost:3000/api/customer";
+        let url = "/api/customer";
         if (params?.locations) {
             url += "?location=" + params.locations;
         } else if (params?.restaurants) {
