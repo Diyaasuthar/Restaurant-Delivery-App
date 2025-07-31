@@ -5,7 +5,8 @@ import mongoose from "mongoose";
 import { NextResponse } from "next/server";
 
 export async function GET(request, content) {
-    const id = content.params.id;
+    const params = await content.params;
+    const id = params.id;
     let success = false;
 
     await mongoose.connect(connectionStr, { useNewUrlParser: true });
@@ -15,10 +16,12 @@ export async function GET(request, content) {
     if (result) {
         let restoData = await Promise.all(
             result.map(async (item) => {
+                console.log('item:', item);
                 let restoInfo = {};
                 restoInfo.amount = item.amount;
                 restoInfo.status = item.status;
-                restoInfo.data = await RestaurantsSchema.findOne({ _id: item.resto_id });
+                restoInfo.data = await RestaurantsSchema.findOne({ _id: item.resto_id});
+                restoInfo.orderId = item._id;
                 return restoInfo;
             })
         );
@@ -28,3 +31,4 @@ export async function GET(request, content) {
 
     return NextResponse.json({ result, success });
 }
+

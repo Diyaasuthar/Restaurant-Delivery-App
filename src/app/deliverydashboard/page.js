@@ -37,6 +37,21 @@ const Page = () => {
         }
     };
 
+    const handleChangeStatus = async (status, orderId) =>{
+        console.log('status:', status, 'orderId:', orderId);
+        let response = await fetch('/api/order/'+orderId,{
+            method:'PATCH',
+        body:JSON.stringify({status})
+        });
+        response = await response.json();
+        console.log('response:', response);
+        if(response.success){
+            alert("Status Updated Successfully");
+            getMyOrders(JSON.parse(localStorage.getItem("delivery"))._id); // refresh orders
+        }
+        
+    }
+
     return (
         <div>
             <DeliveryHearder />
@@ -51,12 +66,13 @@ const Page = () => {
                             <div><strong>Amount:</strong> ₹{item.amount}</div>
                             <div><strong>Address:</strong> {item.data?.address || 'N/A'}</div>
                             <div><strong>Status:</strong> {item.status}</div>
+                             <div><strong>ID:</strong> {item.orderId}</div>
                             <div><strong>Update Status:</strong>
-                                <select className="ml-2 p-1 border rounded">
-                                    <option>Confirm</option>
-                                    <option>On the way</option>
-                                    <option>Delivered</option>
-                                    <option>Failed to deliver</option>
+                                <select onChange={(event)=>handleChangeStatus(event.target.value, item.orderId)} className="ml-2 p-1 border rounded" value={item.status}>
+                                    <option value="Confirm">Confirm</option>
+                                    <option value="On the way">On the way</option>
+                                    <option value="Delivered">Delivered</option>
+                                    <option value="Failed to deliver">Failed to deliver</option>
                                 </select>
                             </div>
                         </div>
