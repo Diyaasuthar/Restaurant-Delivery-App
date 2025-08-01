@@ -1,33 +1,74 @@
-import { connectionStr } from "@/app/lib/db"
+import { connectToDatabase } from "@/app/lib/db"
 import { RestaurantsSchema } from "@/app/lib/RestaurantsModel";
-import mongoose from "mongoose"
 import { NextResponse } from "next/server"
 
 export async function GET() {
-    await mongoose.connect(connectionStr, { useNewUrlParser: true });
-    const data = await RestaurantsSchema.find()
-    console.log(data);
+    try {
+        await connectToDatabase();
+        const data = await RestaurantsSchema.find()
+        console.log(data);
 
-    return NextResponse.json({ result: data })
+        return NextResponse.json({ success: true, result: data })
+    } catch (error) {
+        console.error('GET restaurants error:', error);
+        return NextResponse.json({
+            success: false,
+            error: "Failed to fetch restaurants"
+        }, { status: 500 });
+    }
 }
 
 export async function POST(request) {
-    let payload = await request.json();
-    let result;
-    let success = false;
-    await mongoose.connect(connectionStr, { useNewUrlParser: true });
-    if (payload.login) {
-        result = await RestaurantsSchema.findOne({ email: payload.email, password: payload.password })//use it for Login
-        if (result) {
-            success = true
+    try {
+        const payload = await request.json();
+        let result;
+        let success = false;
+        
+        await connectToDatabase();
+        
+        if (payload.login) {
+            result = await RestaurantsSchema.findOne({ 
+                email: payload.email, 
+                password: payload.password 
+            });
+            
+            if (result) {
+                success = true;
+                // Return sanitized data (without password)
+                result = {
+                    _id: result._id,
+                    name: result.name,
+                    email: result.email,
+                    contact: result.contact,
+                    city: result.city,
+                    address: result.address
+                };
+            }
+        } else {
+            const restaurant = new RestaurantsSchema(payload);
+            result = await restaurant.save();
+            
+            if (result) {
+                success = true;
+                // Return sanitized data (without password)
+                result = {
+                    _id: result._id,
+                    name: result.name,
+                    email: result.email,
+                    contact: result.contact,
+                    city: result.city,
+                    address: result.address
+                };
+            }
         }
-    } else {
-        const restaurant = new RestaurantsSchema(payload);
-        result = await restaurant.save();//use it for singup
-        if (result) {
-            success = true
-        }
+        
+        console.log(payload);
+        return NextResponse.json({ result, success })
+    } catch (error) {
+        console.error('POST restaurant error:', error);
+        return NextResponse.json({
+            success: false,
+            error: "Failed to process restaurant request"
+        }, { status: 500 });
     }
-    console.log(payload);
-    return NextResponse.json({ result, success })
 }

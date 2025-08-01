@@ -42,7 +42,7 @@ const RestaurantHeader=()=>{
                 <button onClick={logout}>Logout</button>
                 </li>
                  <li>
-                <Link href="/">Profile</Link>
+                <Link href="/restaurant/profile">Profile</Link>
                 </li>
                  </>
                 :<li>

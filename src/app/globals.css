@@ -179,14 +179,26 @@ table img {
 .details-wrapper{
   display: flex;
   background-color: orange;
-  padding-left: 90px;
+  padding: 20px 90px;
+  flex-wrap: wrap;
+  gap: 20px;
+  justify-content: center;
 }
 .details-wrapper h4{
-  width: 50%;
+  min-width: 200px;
+  text-align: center;
+  margin: 0;
+  padding: 5px 10px;
+  background-color: rgba(255, 255, 255, 0.1);
+  border-radius: 5px;
 }
 .food-item-wrapper{
   margin-top: 50px;
   margin-bottom: 50px;
+  max-width: 1200px;
+  margin-left: auto;
+  margin-right: auto;
+  padding: 0 20px;
 }
 .food-item-wrapper .list-item{
   color: orange;
@@ -195,14 +207,28 @@ table img {
   padding: 20px;
   display: flex;
   text-transform: capitalize;
+  align-items: center;
+  gap: 20px;
+  transition: background-color 0.2s ease;
+}
+
+.food-item-wrapper .list-item:hover {
+  background-color: rgba(255, 165, 0, 0.05);
 }
 .food-item-wrapper .list-item button{
   color: #fff;
   border: none;
   background-color: orange;
-  padding: 5px;
-  border-radius: 4px;
+  padding: 8px 16px;
+  border-radius: 6px;
   cursor: pointer;
+  font-weight: 600;
+  transition: background-color 0.2s ease;
+  min-width: 120px;
+}
+
+.food-item-wrapper .list-item button:hover {
+  background-color: #e69500;
 }
 .food-item-wrapper .list-item img{
   width: 100px;
@@ -210,6 +236,15 @@ table img {
 }
 .food-item-wrapper .list-item .description{
   font-weight: lighter;
+  text-align: center;
+}
+
+.food-item-wrapper .list-item div:nth-child(2) {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  text-align: center;
 }
 .list-item-block-1{
   width: 20%;
@@ -530,6 +565,238 @@ table img {
   
   .restaurant-wrapper {
     width: 48%;
+  }
+}
+
+/* Restaurant page responsive styles */
+@media (max-width: 768px) {
+  .details-wrapper {
+    padding: 15px 20px;
+    gap: 15px;
+  }
+  
+  .details-wrapper h4 {
+    min-width: 150px;
+    font-size: 14px;
+    padding: 8px 12px;
+  }
+  
+  .food-item-wrapper {
+    padding: 0 15px;
+    margin-top: 30px;
+  }
+  
+  .food-item-wrapper .list-item {
+    flex-direction: column;
+    text-align: center;
+    gap: 15px;
+    padding: 25px 15px;
+  }
+  
+  .food-item-wrapper .list-item img {
+    width: 120px;
+    padding-right: 0;
+    border-radius: 8px;
+  }
+  
+  .food-item-wrapper .list-item button {
+    padding: 10px 20px;
+    font-size: 14px;
+    min-width: 140px;
+  }
+  
+  .food-item-wrapper .list-item .description {
+    font-size: 14px;
+    margin: 8px 0;
+  }
+}
+
+@media (max-width: 480px) {
+  .details-wrapper {
+    padding: 10px 15px;
+    gap: 10px;
+  }
+  
+  .details-wrapper h4 {
+    min-width: 120px;
+    font-size: 12px;
+    padding: 6px 8px;
+  }
+  
+  .food-item-wrapper {
+    padding: 0 10px;
+    margin-top: 20px;
+  }
+  
+  .food-item-wrapper .list-item {
+    padding: 20px 10px;
+    gap: 12px;
+  }
+  
+  .food-item-wrapper .list-item img {
+    width: 100px;
+  }
+  
+  .food-item-wrapper .list-item button {
+    padding: 8px 16px;
+    font-size: 13px;
+    min-width: 120px;
+  }
+  
+  .food-item-wrapper .list-item .description {
+    font-size: 13px;
+  }
+}
+
+/* Restaurant Profile Styles */
+.profile-container {
+  max-width: 800px;
+  margin: 40px auto;
+  padding: 0 20px;
+}
+
+.profile-card {
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+  padding: 40px;
+  border: 1px solid #e0e0e0;
+}
+
+.profile-card h1 {
+  color: #ce7041;
+  text-align: center;
+  margin-bottom: 30px;
+  font-size: 2.5rem;
+  font-weight: 700;
+}
+
+.profile-section {
+  margin-bottom: 30px;
+}
+
+.profile-section h2 {
+  color: #333;
+  font-size: 1.5rem;
+  margin-bottom: 20px;
+  padding-bottom: 10px;
+  border-bottom: 2px solid #ce7041;
+}
+
+.profile-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 15px 0;
+  border-bottom: 1px solid #f0f0f0;
+}
+
+.profile-row:last-child {
+  border-bottom: none;
+}
+
+.profile-row .label {
+  font-weight: 600;
+  color: #555;
+  font-size: 1.1rem;
+  min-width: 150px;
+}
+
+.profile-row .value {
+  color: #333;
+  font-size: 1.1rem;
+  text-align: right;
+  flex: 1;
+  margin-left: 20px;
+}
+
+.profile-actions {
+  text-align: center;
+  margin-top: 30px;
+}
+
+.back-button {
+  background: linear-gradient(90deg, #ce7041 0%, #ffb347 100%);
+  color: #fff;
+  border: none;
+  padding: 12px 30px;
+  border-radius: 8px;
+  font-size: 1.1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.back-button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(206, 112, 65, 0.3);
+}
+
+/* Responsive styles for profile page */
+@media (max-width: 768px) {
+  .profile-container {
+    margin: 20px auto;
+    padding: 0 15px;
+  }
+  
+  .profile-card {
+    padding: 25px;
+  }
+  
+  .profile-card h1 {
+    font-size: 2rem;
+    margin-bottom: 25px;
+  }
+  
+  .profile-section h2 {
+    font-size: 1.3rem;
+  }
+  
+  .profile-row {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+  }
+  
+  .profile-row .label {
+    min-width: auto;
+    font-size: 1rem;
+  }
+  
+  .profile-row .value {
+    text-align: left;
+    margin-left: 0;
+    font-size: 1rem;
+    color: #ce7041;
+    font-weight: 500;
+  }
+}
+
+@media (max-width: 480px) {
+  .profile-container {
+    padding: 0 10px;
+  }
+  
+  .profile-card {
+    padding: 20px;
+  }
+  
+  .profile-card h1 {
+    font-size: 1.8rem;
+  }
+  
+  .profile-section h2 {
+    font-size: 1.2rem;
+  }
+  
+  .profile-row .label,
+  .profile-row .value {
+    font-size: 0.95rem;
+  }
+  
+  .back-button {
+    padding: 10px 25px;
+    font-size: 1rem;
   }
 }
  .auth-container{
