@@ -21,9 +21,10 @@ const Page = () => {
             
             cart.forEach(item => {
                 if (itemMap.has(item._id)) {
-                    // Item already exists, add quantities
+                    // Item already exists, set quantity to item.quantity (do not sum)
+                    // This ensures only the latest quantity is used, preventing double addition
                     const existingItem = itemMap.get(item._id);
-                    existingItem.quantity = (existingItem.quantity || 1) + (item.quantity || 1);
+                    existingItem.quantity = item.quantity || 1;
                 } else {
                     // New item, add to map
                     const newItem = {

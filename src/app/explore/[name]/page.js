@@ -75,7 +75,7 @@ const Page = () => {
       // Item doesn't exist, add with quantity 1
       existingCart.push({ ...item, quantity: 1 });
     }
-    
+    console.log("✅ Updated Cart:", existingCart);
     localStorage.setItem('cart', JSON.stringify(existingCart));
     setCartData(item);
     // Update cartIds with unique IDs only

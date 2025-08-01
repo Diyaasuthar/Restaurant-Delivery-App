@@ -21,6 +21,7 @@ const CustomerHearder = (props) => {
             if (cartStorage) {
                 const parsedCart = JSON.parse(cartStorage);
                 // Calculate total items including quantities
+                console.log("Cart Storage:", parsedCart);
                 const totalItems = parsedCart.reduce((sum, item) => sum + (item.quantity || 1), 0);
                 setCartNumber(totalItems);
                 setCartItem(parsedCart);
