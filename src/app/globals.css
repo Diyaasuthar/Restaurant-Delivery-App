@@ -246,6 +246,83 @@ table img {
   gap: 8px;
   text-align: center;
 }
+
+/* Quantity Controls Styles */
+.quantity-controls {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 10px 0;
+}
+
+.quantity-btn {
+  background-color: orange;
+  color: white;
+  border: none;
+  border-radius: 50%;
+  width: 30px;
+  height: 30px;
+  font-size: 18px;
+  font-weight: bold;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background-color 0.2s ease;
+}
+
+.quantity-btn:hover {
+  background-color: #e69500;
+}
+
+.quantity-display {
+  font-size: 16px;
+  font-weight: bold;
+  color: orange;
+  min-width: 30px;
+  text-align: center;
+}
+
+.item-name {
+  font-size: 18px;
+  font-weight: bold;
+  color: orange;
+  margin-bottom: 5px;
+}
+
+.item-price {
+  font-size: 14px;
+  color: #666;
+  margin: 8px 0;
+  font-weight: 500;
+}
+
+.remove-btn {
+  background-color: #ff4444;
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 600;
+  transition: background-color 0.2s ease;
+  margin-top: 8px;
+}
+
+.remove-btn:hover {
+  background-color: #cc0000;
+}
+
+/* Order Details Styles */
+.order-item {
+  margin-bottom: 10px;
+  padding: 8px 0;
+  border-bottom: 1px solid #f0f0f0;
+}
+
+.order-item:last-child {
+  border-bottom: none;
+}
 .list-item-block-1{
   width: 20%;
 }

@@ -24,7 +24,9 @@ const Page = () => {
     if (typeof window !== 'undefined') {
       const cart = JSON.parse(localStorage.getItem('cart') || '[]');
       setCartStorage(cart);
-      setCartIds(cart.map((item) => item._id));
+      // Get unique IDs from cart to avoid duplicates
+      const uniqueIds = [...new Set(cart.map((item) => item._id))];
+      setCartIds(uniqueIds);
     }
   }, []);
 
@@ -61,17 +63,41 @@ const Page = () => {
       window.location.href = '/user-auth';
       return;
     }
+    
+    // Check if item already exists in cart
+    const existingCart = JSON.parse(localStorage.getItem('cart') || '[]');
+    const existingItemIndex = existingCart.findIndex(cartItem => cartItem._id === item._id);
+    
+    if (existingItemIndex !== -1) {
+      // Item exists, increment quantity
+      existingCart[existingItemIndex].quantity = (existingCart[existingItemIndex].quantity || 1) + 1;
+    } else {
+      // Item doesn't exist, add with quantity 1
+      existingCart.push({ ...item, quantity: 1 });
+    }
+    
+    localStorage.setItem('cart', JSON.stringify(existingCart));
     setCartData(item);
-    let localCartIds = [...cartIds, item._id];
-    setCartIds(localCartIds);
+    // Update cartIds with unique IDs only
+    const uniqueIds = [...new Set(existingCart.map((item) => item._id))];
+    setCartIds(uniqueIds);
     setRemoveCartData();
   }
 
   const removeFromCart = (id) => {
+    if (typeof window === 'undefined') return;
+    
+    // Remove item from cart
+    const existingCart = JSON.parse(localStorage.getItem('cart') || '[]');
+    const updatedCart = existingCart.filter(item => item._id !== id);
+    localStorage.setItem('cart', JSON.stringify(updatedCart));
+    
     setRemoveCartData(id);
-    var localIds = cartIds.filter(item => item != id);
-    setCartData()
-    setCartIds(localIds)
+    setCartData();
+    
+    // Update cartIds with unique IDs only
+    const uniqueIds = [...new Set(updatedCart.map((item) => item._id))];
+    setCartIds(uniqueIds);
   }
 
   // Show loading state while data is being loaded

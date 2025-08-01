@@ -22,17 +22,23 @@ const Page = () => {
             setCartStorage(cart);
             
             if (cart) {
-                const calculatedTotal = cart.reduce((sum, item) => sum + (Number(item.price) || 0), 0);
+                // Calculate total based on quantity × price for each item
+                const calculatedTotal = cart.reduce((sum, item) => 
+                    sum + (Number(item.price) * (item.quantity || 1)), 0);
                 setTotal(calculatedTotal);
             }
         }
     }, []);
 
     useEffect(() => {
-        if (total === 0 && typeof window !== 'undefined') {
-            router.push('/order');
+        // Check if cart is empty and refresh page to redirect to home
+        if (typeof window !== 'undefined') {
+            const cart = JSON.parse(localStorage.getItem('cart') || '[]');
+            if (!cart || cart.length === 0) {
+                window.location.href = '/';
+            }
         }
-    }, [total, router]);
+    }, [cartStorage]);
 
     const orderNow = async () => {
         if (typeof window === 'undefined') return;
@@ -40,7 +46,14 @@ const Page = () => {
         let user_id = JSON.parse(localStorage.getItem('user'))._id;
         let city = JSON.parse(localStorage.getItem('user')).city;
         let cart = JSON.parse(localStorage.getItem('cart'));
-        let foodItemIds = cart.map((item) => item._id).toString();
+        
+        // Create food items with quantities for order
+        let foodItemIds = cart.map((item) => ({
+            foodId: item._id,
+            quantity: item.quantity || 1,
+            price: item.price
+        }));
+        
         let deliveryBoyResponse = await fetch('/api/deliveryPartner/' + city);
         deliveryBoyResponse = await deliveryBoyResponse.json();
         let deliveryBoyIds = deliveryBoyResponse.result.map((item) => item._id);
@@ -55,7 +68,7 @@ const Page = () => {
         let collection = {
             user_id,
             resto_id,
-            foodItemIds,
+            foodItems: foodItemIds, // Send food items with quantities
             deliveryBoy_id,
             status: 'confirm',
             amount: total + DELIVERY_CHARGES + (total * TAX / 100),
@@ -90,6 +103,19 @@ const Page = () => {
         );
     }
 
+    // Check if cart is empty and redirect
+    if (!cartStorage || cartStorage.length === 0) {
+        return (
+            <div>
+                <CustomerHearder removeCartData={removeCartData} />
+                <div style={{ textAlign: 'center', padding: '50px' }}>
+                    <h2>Redirecting to home page...</h2>
+                </div>
+                <RestaurantFooter />
+            </div>
+        );
+    }
+
     return (
         <div>
             <CustomerHearder removeCartData={removeCartData} />
@@ -108,27 +134,38 @@ const Page = () => {
                         <span>Mobile : </span>
                         <span>{userStorage.mobile}</span>
                     </div>
+                    
+                    <h2>Order Details</h2>
+                    {cartStorage.map((item, index) => (
+                        <div key={index} className="order-item">
+                            <div className="row">
+                                <span>{item.name} (Qty: {item.quantity || 1}) : </span>
+                                <span>₹{(item.price * (item.quantity || 1)).toFixed(2)}</span>
+                            </div>
+                        </div>
+                    ))}
+                    
                     <h2>Amount Details</h2>
                     <div className="row">
                         <span>Food Charges : </span>
-                        <span>{total}</span>
+                        <span>₹{total.toFixed(2)}</span>
                     </div>
                     <div className="row">
                         <span>Tax : </span>
-                        <span>{total * TAX / 100}</span>
+                        <span>₹{(total * TAX / 100).toFixed(2)}</span>
                     </div>
                     <div className="row">
                         <span>Delivery Charges : </span>
-                        <span>{DELIVERY_CHARGES}</span>
+                        <span>₹{DELIVERY_CHARGES}</span>
                     </div>
                     <div className="row">
                         <span>Total Amount : </span>
-                        <span>{total + DELIVERY_CHARGES + (total * TAX / 100)}</span>
+                        <span>₹{(total + DELIVERY_CHARGES + (total * TAX / 100)).toFixed(2)}</span>
                     </div>
                     <h2>Payment Methods</h2>
                     <div className="row">
                         <span>Cash on Delivery</span>
-                        <span>{total + DELIVERY_CHARGES + (total * TAX / 100)}</span>
+                        <span>₹{(total + DELIVERY_CHARGES + (total * TAX / 100)).toFixed(2)}</span>
                     </div>
                 </div>
                 <div className="block-2">

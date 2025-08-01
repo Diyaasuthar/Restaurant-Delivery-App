@@ -20,7 +20,9 @@ const CustomerHearder = (props) => {
             const cartStorage = localStorage.getItem('cart');
             if (cartStorage) {
                 const parsedCart = JSON.parse(cartStorage);
-                setCartNumber(parsedCart.length);
+                // Calculate total items including quantities
+                const totalItems = parsedCart.reduce((sum, item) => sum + (item.quantity || 1), 0);
+                setCartNumber(totalItems);
                 setCartItem(parsedCart);
             }
         }
@@ -33,18 +35,37 @@ const CustomerHearder = (props) => {
 
             if (cartStorage.length) {
                 if (cartStorage[0].resto_id !== props.cartData.resto_id) {
-                    const newCart = [props.cartData];
+                    // Different restaurant, clear cart and add new item
+                    const newCart = [{ ...props.cartData, quantity: 1 }];
                     localStorage.setItem('cart', JSON.stringify(newCart));
                     setCartItem(newCart);
                     setCartNumber(1);
                 } else {
-                    const updatedCart = [...cartStorage, props.cartData];
-                    localStorage.setItem('cart', JSON.stringify(updatedCart));
-                    setCartItem(updatedCart);
-                    setCartNumber(updatedCart.length);
+                    // Same restaurant, check if item already exists
+                    const existingItemIndex = cartStorage.findIndex(item => item._id === props.cartData._id);
+                    
+                    if (existingItemIndex !== -1) {
+                        // Item exists, increment quantity
+                        const updatedCart = [...cartStorage];
+                        updatedCart[existingItemIndex].quantity = (updatedCart[existingItemIndex].quantity || 1) + 1;
+                        localStorage.setItem('cart', JSON.stringify(updatedCart));
+                        setCartItem(updatedCart);
+                        // Calculate total items including quantities
+                        const totalItems = updatedCart.reduce((sum, item) => sum + (item.quantity || 1), 0);
+                        setCartNumber(totalItems);
+                    } else {
+                        // New item, add with quantity 1
+                        const updatedCart = [...cartStorage, { ...props.cartData, quantity: 1 }];
+                        localStorage.setItem('cart', JSON.stringify(updatedCart));
+                        setCartItem(updatedCart);
+                        // Calculate total items including quantities
+                        const totalItems = updatedCart.reduce((sum, item) => sum + (item.quantity || 1), 0);
+                        setCartNumber(totalItems);
+                    }
                 }
             } else {
-                const newCart = [props.cartData];
+                // Empty cart, add first item
+                const newCart = [{ ...props.cartData, quantity: 1 }];
                 localStorage.setItem('cart', JSON.stringify(newCart));
                 setCartItem(newCart);
                 setCartNumber(1);
@@ -57,7 +78,9 @@ const CustomerHearder = (props) => {
         if (typeof window !== "undefined" && props.removeCartData) {
             const filteredCart = cartItem.filter(item => item._id !== props.removeCartData);
             setCartItem(filteredCart);
-            setCartNumber(filteredCart.length);
+            // Calculate total items including quantities
+            const totalItems = filteredCart.reduce((sum, item) => sum + (item.quantity || 1), 0);
+            setCartNumber(totalItems);
             if (filteredCart.length > 0) {
                 localStorage.setItem('cart', JSON.stringify(filteredCart));
             } else {

@@ -14,10 +14,33 @@ const Page = () => {
         // Only access localStorage on the client side
         if (typeof window !== 'undefined') {
             const cart = JSON.parse(localStorage.getItem('cart') || '[]');
-            setCartStorage(cart);
             
-            if (cart.length > 0) {
-                const calculatedTotal = cart.reduce((sum, item) => sum + (Number(item.price) || 0), 0);
+            // Remove duplicates and merge quantities for same items
+            const uniqueCart = [];
+            const itemMap = new Map();
+            
+            cart.forEach(item => {
+                if (itemMap.has(item._id)) {
+                    // Item already exists, add quantities
+                    const existingItem = itemMap.get(item._id);
+                    existingItem.quantity = (existingItem.quantity || 1) + (item.quantity || 1);
+                } else {
+                    // New item, add to map
+                    const newItem = {
+                        ...item,
+                        quantity: item.quantity || 1
+                    };
+                    itemMap.set(item._id, newItem);
+                    uniqueCart.push(newItem);
+                }
+            });
+            
+            setCartStorage(uniqueCart);
+            localStorage.setItem('cart', JSON.stringify(uniqueCart));
+            
+            if (uniqueCart.length > 0) {
+                const calculatedTotal = uniqueCart.reduce((sum, item) => 
+                    sum + (Number(item.price) * (item.quantity || 1)), 0);
                 setTotal(calculatedTotal);
             }
         }
@@ -33,6 +56,28 @@ const Page = () => {
         }
     }
 
+    const updateQuantity = (itemId, newQuantity) => {
+        if (typeof window === 'undefined') return;
+        
+        if (newQuantity <= 0) {
+            // Remove item if quantity is 0 or less
+            removeFromCart(itemId);
+            return;
+        }
+
+        const updatedCart = cartStorage.map(item => 
+            item._id === itemId ? { ...item, quantity: newQuantity } : item
+        );
+        
+        setCartStorage(updatedCart);
+        localStorage.setItem('cart', JSON.stringify(updatedCart));
+        
+        // Recalculate total
+        const newTotal = updatedCart.reduce((sum, item) => 
+            sum + (Number(item.price) * (item.quantity || 1)), 0);
+        setTotal(newTotal);
+    };
+
     const removeFromCart = (itemId) => {
         if (typeof window === 'undefined') return;
         
@@ -41,10 +86,13 @@ const Page = () => {
         localStorage.setItem('cart', JSON.stringify(updatedCart));
         
         if (updatedCart.length > 0) {
-            const newTotal = updatedCart.reduce((sum, item) => sum + (Number(item.price) || 0), 0);
+            const newTotal = updatedCart.reduce((sum, item) => 
+                sum + (Number(item.price) * (item.quantity || 1)), 0);
             setTotal(newTotal);
         } else {
             setTotal(0);
+            // Cart is empty, refresh page to redirect to home
+            window.location.href = '/';
         }
     };
 
@@ -68,14 +116,36 @@ const Page = () => {
                 {
                     cartStorage.length > 0 ? cartStorage.map((item, index) => (
                         <div key={index} className="list-item">
-                            <div className="list-item-block-1"><img style={{ width: 100 }} src={item.path} /></div>
+                            <div className="list-item-block-1">
+                                <img style={{ width: 100 }} src={item.path} />
+                            </div>
                             <div className="list-item-block-2">
-                                <div>{item.name}</div>
+                                <div className="item-name">{item.name}</div>
                                 <div className="description">{item.description}</div>
-                                {
-                                    <button onClick={() => removeFromCart(item._id)}>Remove From Cart</button>
-                                }
-                                <div className="list-item-block-3 ">Price: {item.price}</div>
+                                <div className="quantity-controls">
+                                    <button 
+                                        className="quantity-btn"
+                                        onClick={() => updateQuantity(item._id, (item.quantity || 1) - 1)}
+                                    >
+                                        -
+                                    </button>
+                                    <span className="quantity-display">{item.quantity || 1}</span>
+                                    <button 
+                                        className="quantity-btn"
+                                        onClick={() => updateQuantity(item._id, (item.quantity || 1) + 1)}
+                                    >
+                                        +
+                                    </button>
+                                </div>
+                                <div className="item-price">
+                                    Price: ₹{item.price} × {item.quantity || 1} = ₹{(item.price * (item.quantity || 1))}
+                                </div>
+                                <button 
+                                    className="remove-btn"
+                                    onClick={() => removeFromCart(item._id)}
+                                >
+                                    Remove From Cart
+                                </button>
                             </div>
                         </div>
                     )) :
@@ -86,19 +156,19 @@ const Page = () => {
                 <div className="block-1">
                     <div className="row">
                         <span>Food Charges : </span>
-                        <span>{total}</span>
+                        <span>₹{total}</span>
                     </div>
                     <div className="row">
                         <span>Tax : </span>
-                        <span>{total * TAX / 100}</span>
+                        <span>₹{(total * TAX / 100).toFixed(2)}</span>
                     </div>
                     <div className="row">
                         <span>Delivery Charges : </span>
-                        <span>{DELIVERY_CHARGES}</span>
+                        <span>₹{DELIVERY_CHARGES}</span>
                     </div>
                     <div className="row">
                         <span>Total Amount : </span>
-                        <span>{total + DELIVERY_CHARGES + (total * TAX / 100)}</span>
+                        <span>₹{(total + DELIVERY_CHARGES + (total * TAX / 100)).toFixed(2)}</span>
                     </div>
                 </div>
                 <div className="block-2">
